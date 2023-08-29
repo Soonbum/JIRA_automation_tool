@@ -17,6 +17,7 @@ from getpass import getpass
 from jira import JIRA, JIRAError
 from jira.resources import *
 from jira.client import JIRA
+#from tqdm import tqdm
 
 # tkinter gui
 from tkinter import *
@@ -75,7 +76,7 @@ class Codebeamer(ProjectMixin):
 VLM_url = 'http://vlm.lge.com/issue/'
 
 ########## 로그인하기
-print('JIRA 로그인')
+print('VLM(jira) 로그인')
 username = input('ID: ')
 password = getpass('Password: ')
 
@@ -83,7 +84,7 @@ print("=" * 100)
 print("Jira 서버에 로그인: %s " % VLM_url)
 
 try:
-    jira = JIRA(server=VLM_url, auth=(username, password))
+    jira = JIRA(server=VLM_url, basic_auth=(username, password))
 except JIRAError as err:
     print(" ")
     print("    {} **".format(err))
@@ -306,7 +307,7 @@ def custom_issue_cloning_and_renaming():
             for watcher in watchers.watchers:
                 jira.add_watcher(new_issue, jira._get_user_id(watcher))
             print('[%d] 생성된 이슈: %s' % (seq, new_issue))
-            time.sleep(delay_seconds + random.random() * 10)  # (delay_seconds + random(0~1)*10) 초 대기
+            time.sleep(int(delay_seconds))  # delay_seconds초 대기
         else:
             print('[%d] 이미 생성된 이슈: %s' % (seq, issue.key))
 
@@ -346,8 +347,10 @@ def add_watchers_of_specific_person():
                 jira.add_watcher(issue, watcher_name)
             print("[%d][%s : %s] 특정 assignee/watcher인 이슈에 watcher 추가하기: 작업 완료" % (seq, issue.key, issue.fields.summary))
 
-        time.sleep(delay_seconds + random.random() * 10)  # (delay_seconds + random(0~1)*10) 초 대기
+        time.sleep(int(delay_seconds))  # delay_seconds초 대기
         seq = seq + 1
+
+    print("특정 assignee/watcher인 이슈에 watcher 추가하기: 작업을 완료했습니다.")
 
 tk.Label(mainWindow, text = "커스텀 기능").grid(row = 4, column = 0, padx = 10, pady = 10)
 tk.Button(mainWindow, text = "이슈 복사하고 제목 바꾸기", command = custom_issue_cloning_and_renaming).grid(row = 4, column = 1, padx = 10, pady = 5, sticky="w")
