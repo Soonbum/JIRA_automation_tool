@@ -296,7 +296,7 @@ def custom_issue_cloning_and_renaming():
         another_issues = jira.search_issues(another_query, maxResults=0)
         find_already_made_issue = False
         for another_issue in another_issues:
-            if(str(issue.fields.summary) == str(another_issue.fields.summary)):
+            if(str(issue.fields.summary).replace(old_title, new_title) == str(another_issue.fields.summary)):
                 find_already_made_issue = True
 
         # 아직 이슈를 생성하지 않았다면 만들 것
