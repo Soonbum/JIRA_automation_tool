@@ -277,15 +277,15 @@ def custom_issue_cloning_and_renaming():
         issue_dict = {
             'project': str(issue.fields.project),
             'summary': str(issue.fields.summary).replace(old_title, new_title),
-            'issuetype': {'name': issue.fields.issuetype},
+            'issuetype': {'name': str(issue.fields.issuetype)},
             'priority': {'name': str(issue.fields.priority)},
             'components': components,
             'labels': labels,
-            'customfield_43801': {'value': issue.get_field('customfield_43801')},       # HMC프로젝트
+            'customfield_43801': {'value': str(issue.get_field('customfield_43801'))},       # HMC프로젝트
             'assignee': {'name': str(issue.fields.assignee).split(' ')[-1]},     # 마지막 영문 이름만 사용하기
             'duedate': due_date,
             'description': str(issue.fields.description),            
-            'parent': {'key': issue.key},       # Sub-task의 경우 parent를 지정해야 함
+            'parent': {'key': str(issue.fields.parent.key)},       # Sub-task의 경우 parent를 지정해야 함
             'versions': [{'name': 'None'}],     # Affects Versions
             'fixVersions': [{'name': 'None'}],  # Fix Versions
         }
