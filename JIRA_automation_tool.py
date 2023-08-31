@@ -155,7 +155,7 @@ def make_an_issue_sample():
         'labels': ['ccIC24_CLU_WBS'],
         'customfield_43801': {'value': 'ccIC24'},       # HMC프로젝트
         'customfield_10104': {'value': 'Comment'},      # Severity
-        'assignee': {'name': 'soonbum.jeong'},
+        'assignee': {'name': 'jimin91.song'},
         'duedate': '2023-08-30',
         'description': '설명 텍스트입니다',
         #'parent': {'key': issue.key},       # issuetype == Sub-task의 경우 parent를 지정해야 함
@@ -167,6 +167,7 @@ def make_an_issue_sample():
     new_issue = jira.create_issue(issue_dict)
     # Watcher 정보는 따로 추가해야 함
     jira.add_watcher(new_issue, jira._get_user_id('soonbum.jeong'))
+    #jira.remove_watcher(new_issue, jira._get_user_id('soonbum.jeong'))
     print('생성된 이슈: ', new_issue)
 
 tk.Label(mainWindow, text = "샘플 테스트").grid(row = 0, column = 0, padx = 10, pady = 5)
@@ -352,9 +353,35 @@ def add_watchers_of_specific_person():
 
     print("특정 assignee/watcher인 이슈에 watcher 추가하기: 작업을 완료했습니다.")
 
+# 커스텀 기능 - 특정 watcher를 모든 이슈에서 제거하기
+def del_watcher_from_all_issues():
+    name_to_delete = input("지우고 싶은 watcher 이름을 입력하세요(예: jimin91.song): ")
+
+    query = "project in (HKMCCLUHUD) AND summary ~ ccIC24"
+    issues = jira.search_issues(query, maxResults=0)
+    find_person = False
+    seq = 1
+    for issue in issues:
+        # name_to_delete에 입력된 이름이 이슈의 watcher에 있는지 찾아볼 것
+        find_person = False
+        watchers = jira.watchers(issue)
+        for watcher in watchers.watchers:
+            if(str(watcher).split(' ')[-1] == name_to_delete):
+                find_person = True
+
+        # 이름을 찾았으면 지우고 싶었던 watcher를 제거함
+        if(find_person == True):
+            jira.remove_watcher(issue, jira._get_user_id(name_to_delete))
+            print("[%d][%s : %s] 특정 watcher를 모든 이슈에서 제거하기: 작업 완료" % (seq, issue.key, issue.fields.summary))
+        
+        seq = seq + 1
+    
+    print("특정 watcher를 모든 이슈에서 제거하기: 작업을 완료했습니다.")
+
 tk.Label(mainWindow, text = "커스텀 기능").grid(row = 4, column = 0, padx = 10, pady = 10)
 tk.Button(mainWindow, text = "이슈 복사하고 제목 바꾸기", command = custom_issue_cloning_and_renaming).grid(row = 4, column = 1, padx = 10, pady = 5, sticky="w")
 tk.Button(mainWindow, text = "특정 assignee/watcher인 이슈에 watcher 추가하기", command = add_watchers_of_specific_person).grid(row = 5, column = 1, padx = 10, pady = 5, sticky="w")
+tk.Button(mainWindow, text = "특정 watcher를 모든 이슈에서 제거하기", command = del_watcher_from_all_issues).grid(row = 6, column = 1, padx = 10, pady = 5, sticky="w")
 
 mainWindow.mainloop()
 jira.close()
