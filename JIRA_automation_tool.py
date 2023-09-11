@@ -304,10 +304,17 @@ def custom_issue_cloning_and_renaming():
                 comparison_str_2 = str(comparison_str_1.replace(('] ' + new_title), (']' + new_title)))
             else:
                 comparison_str_2 = str(comparison_str_1.replace((']' + new_title), ('] ' + new_title)))
+            # 제목 맨 앞에 공백 문자가 들어가는 경우도 있을 수 있다.
+            comparison_str_3 = ' ' + comparison_str_1
+            comparison_str_4 = ' ' + comparison_str_2
 
             if(str(issue.fields.summary.replace(old_title, new_title)) == comparison_str_1):
                 find_already_made_issue = True
             if(str(issue.fields.summary.replace(old_title, new_title)) == comparison_str_2):
+                find_already_made_issue = True
+            if(str(issue.fields.summary.replace(old_title, new_title)) == comparison_str_3):
+                find_already_made_issue = True
+            if(str(issue.fields.summary.replace(old_title, new_title)) == comparison_str_4):
                 find_already_made_issue = True
 
         # 아직 이슈를 생성하지 않았다면 만들 것
