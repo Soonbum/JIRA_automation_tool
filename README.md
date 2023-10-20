@@ -4,3 +4,4 @@
   - pip install html_text
   - pip install requests
   - pip install jira
+  - pip install pyside6 (Qt 버전의 경우)
